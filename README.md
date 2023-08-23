@@ -31,7 +31,20 @@ npm i nestjs-firebase-admin --save
 # pnpm
 pnpm add nestjs-firebase-admin --save
 ```
+###  Environment variables
 
+> Create a `.env` file in the root directory of your project
+
+More info:
+- [Firebase Admin SDK](https://firebase.google.com/docs/admin/setup#initialize-sdk)
+- [Firebase Cloud Messaging](https://firebase.google.com/docs/cloud-messaging)
+- 
+```ts
+FIREBASE_ADMIN_PROJECT_ID=""
+FIREBASE_ADMIN_CLIENT_EMAIL=""
+FIREBASE_ADMIN_PRIVATE_KEY=""
+FCM_TOKEN=""
+```
 ### Usage example
 
 ```ts
