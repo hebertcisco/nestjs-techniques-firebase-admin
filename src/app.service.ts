@@ -6,26 +6,32 @@ import { messaging } from 'firebase-admin';
 
 import MessagingDevicesResponse = messaging.MessagingDevicesResponse;
 
+/**
+ * TODO: This is just an example of how to use the adminService.
+ */
 @Injectable()
 export class AppService {
-  constructor(private adminService: AdminService) {}
+  constructor(private adminService: AdminService) { }
 
-  public async getHello(message: string): Promise<MessagingDevicesResponse> {
+  public async getHello(message: string) {
     const admin = this.adminService.admin();
-
+    /**
+     * TODO: Is this the best way to get the token? No, you should find a way to get it.
+     * This is just an example of how to use the configService.
+     */
     const registrationToken = configService.getValue<string>('FCM_TOKEN');
 
-    return admin.messaging().sendToDevice(
-      registrationToken,
-      {
-        notification: {
-          body: String(message) || 'Hello World!',
-        },
+    console.log("message", message);
+
+    const payload = {
+      notification: {
+        title: 'Hello',
+        body: message,
       },
-      {
-        priority: 'high',
-        timeToLive: 60 * 60 * 24,
-      },
-    );
+    };
+
+    const response: MessagingDevicesResponse = await admin.messaging().sendToDevice(registrationToken, payload);
+    console.log('Successfully sent message:', response);
+    return { message: message };
   }
 }
