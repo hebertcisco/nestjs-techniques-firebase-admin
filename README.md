@@ -1,73 +1,79 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+[![codecov](https://codecov.io/gh/hebertcisco/nestjs-firebase-admin/branch/main/graph/badge.svg?token=N0IW1UNNIP)](https://codecov.io/gh/hebertcisco/nestjs-firebase-admin)
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/main?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
-  
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/main" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=main" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=main#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+[![CircleCI](https://dl.circleci.com/status-badge/img/gh/hebertcisco/nestjs-firebase-admin/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/hebertcisco/nestjs-firebase-admin/tree/main)
 
-## Description
+[![Node.js build and publish package](https://github.com/hebertcisco/nestjs-firebase-admin/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/hebertcisco/nestjs-firebase-admin/actions/workflows/npm-publish.yml)
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+[![Running Code Coverage](https://github.com/hebertcisco/nestjs-firebase-admin/actions/workflows/coverage.yml/badge.svg)](https://github.com/hebertcisco/nestjs-firebase-admin/actions/workflows/coverage.yml)
+
+[![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![Nestjs](https://img.shields.io/badge/Nestjs-ea2845?style=flat&logo=nestjs&logoColor=white)](https://nestjs.com/)
+[![Free. Built on open source. Runs everywhere.](https://img.shields.io/badge/VS_Code-0078D4?style=flat&logo=visual%20studio%20code&logoColor=white)](https://code.visualstudio.com/)
+[![GitHub Actions](https://img.shields.io/badge/github%20actions-%232671E5.svg?style=flat&logo=githubactions&logoColor=white)](https://github.com/hebertcisco/nestjs-firebase-admin/actions)
+
+> Firebase Admin SDK for Nestjs :fire:
 
 ## Installation
 
-```bash
-$ npm install
-```
-
-## Running the app
+> Install with yarn or npm: `yarn` or `npm`:
 
 ```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+# yarn
+yarn add nestjs-firebase-admin
 ```
-
-## Test
 
 ```bash
-# unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+# npm
+npm i nestjs-firebase-admin --save
 ```
 
-## Support
+```bash
+# pnpm
+pnpm add nestjs-firebase-admin --save
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+### Usage example
 
-## Stay in touch
+```ts
+// common.module.ts
+import { Module } from '@nestjs/common';
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { AdminModule } from 'nestjs-firebase-admin';
 
-## License
+import { CommonService } from './common.service';
 
-  Nest is [MIT licensed](https://github.com/nestjs/nest/blob/main/LICENSE).
+@Module({
+  imports: [
+    AdminModule.register({
+     credential: {
+        projectId: 'my-project-id',
+        clientEmail: 'my-client-email',
+        privateKey: 'my-private-key',
+      },
+      databaseURL: 'https://my-project-id.firebaseio.com',
+    }),
+  ],
+  providers: [CommonService],
+})
+export class CommonModule {}
+```
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome!<br />Feel free to check [issues page](issues).
+
+## Show your support
+
+Give a ⭐️ if this project helped you!
+
+Or buy me a coffee 🙌🏾
+
+<a href="https://www.buymeacoffee.com/hebertcisco">
+    <img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=hebertcisco&button_colour=FFDD00&font_colour=000000&font_family=Inter&outline_colour=000000&coffee_colour=ffffff" />
+</a>
+
+## 📝 License
+
+Copyright © 2023 [Hebert F Barros](https://github.com/hebertcisco).<br />
+This project is [MIT](LICENSE) licensed.
