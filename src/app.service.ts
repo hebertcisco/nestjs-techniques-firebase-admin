@@ -12,10 +12,10 @@ export class AppService {
     private readonly notificationService: NotificationService,
   ) {}
 
-  async getData(): Promise<any> {
+  async getData(): Promise<any[]> {
     const data = await this.databaseService.get('path/to/data');
     if (!data) {
-      throw new Error('No data found');
+      return [];
     }
     const dataArray = Object.entries(data).map(([key, value]) => ({
       id: key,
