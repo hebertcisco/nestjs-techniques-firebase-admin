@@ -42,8 +42,8 @@ export class NotificationService {
         await this.messagingService.sendToDevice(token, {
           token,
           notification: {
-            title: 'New Data Created',
-            body: `New data created with ID: ${data.id}`,
+            title: 'Welcome to our service!',
+            body: 'We are glad to have you here.',
           },
           data: {
             type: 'DATA_CREATED',
@@ -56,7 +56,7 @@ export class NotificationService {
           welcomeMessageSent: true,
           updatedAt: new Date().toISOString(),
         });
-        console.log('Notification sent successfully');
+        console.log('Notification sent successfully: ', data.id);
       } catch (error) {
         console.error('Error sending notification:', error);
         throw new HttpException('Error sending notification', 500);
