@@ -1,5 +1,5 @@
 app = 'nestjs-techniques-firebase-admin'
-primary_region = 'gig'
+primary_region = 'gru'
 
 [build]
 
