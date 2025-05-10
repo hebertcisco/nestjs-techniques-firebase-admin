@@ -1,0 +1,19 @@
+app = 'nestjs-techniques-firebase-admin'
+primary_region = 'gig'
+
+[build]
+
+[http_service]
+  internal_port = 5672
+  force_https = true
+  protocol = "tcp"
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 1
+  processes = ['app']
+
+[[vm]]
+  memory = '256mb'
+  cpu_kind = 'shared'
+  cpus = 1
+  memory_mb = 256
