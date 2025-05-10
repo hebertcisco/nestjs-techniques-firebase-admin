@@ -13,19 +13,37 @@ export class AppService {
   ) {}
 
   async getData(): Promise<any> {
-    return 'This action returns all data';
+    const data = await this.databaseService.get('path/to/data');
+    if (!data) {
+      throw new Error('No data found');
+    }
+    const dataArray = Object.entries(data).map(([key, value]) => ({
+      id: key,
+      ...(typeof value === 'object' && value !== null ? value : {}),
+    }));
+    return dataArray;
   }
 
   async setData(setDataDto: SetDataDto): Promise<SetDataDto & { id: string }> {
     const id = randomUUID();
-    await this.databaseService.set(`path/to/data/${id}`, setDataDto);
+    const timestamp = new Date().toISOString();
+    await this.databaseService.set(`path/to/data/${id}`, {
+      ...setDataDto,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      welcomeMessageSent: false,
+    });
 
-    // Publish notification when data is created
+    // Send welcome message
     await this.notificationService.publishNotification('data-created', {
       type: 'DATA_CREATED',
-      data: setDataDto,
+      data: {
+        ...setDataDto,
+        id,
+        timestamp: timestamp,
+      },
       id,
-      timestamp: new Date().toISOString(),
+      timestamp: timestamp,
     });
 
     return { ...setDataDto, id };
@@ -35,7 +53,10 @@ export class AppService {
     id: string,
     updateDataDto: UpdateDataDto,
   ): Promise<UpdateDataDto> {
-    await this.databaseService.update(`path/to/data/${id}`, updateDataDto);
+    await this.databaseService.update(`path/to/data/${id}`, {
+      ...updateDataDto,
+      updatedAt: new Date().toISOString(),
+    });
     return updateDataDto;
   }
 

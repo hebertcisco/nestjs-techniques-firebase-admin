@@ -22,4 +22,19 @@ export class SetDataDto {
     message: 'Name can only contain letters, numbers, spaces and hyphens',
   })
   name: string;
+
+  @ApiProperty({
+    description: 'The FCM token for push notifications',
+    example: 'fcm_token_example',
+    minLength: 10,
+    maxLength: 200,
+  })
+  @IsNotEmpty({ message: 'FCM token is required' })
+  @IsString({ message: 'FCM token must be a string' })
+  @MinLength(10, { message: 'FCM token must be at least 10 characters long' })
+  @MaxLength(200, { message: 'FCM token must not exceed 200 characters' })
+  @Matches(/^[a-zA-Z0-9_]+$/, {
+    message: 'FCM token can only contain letters, numbers and underscores',
+  })
+  fcm_token: string;
 }
