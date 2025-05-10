@@ -31,7 +31,7 @@
     "dotenv": "^16.5.0",
     "mqtt": "^5.13.0",
     "nest-shared": "^5.0.6",
-    "nestjs-firebase-admin": "0.3.5",
+    "nestjs-firebase-admin": "0.4.5",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
