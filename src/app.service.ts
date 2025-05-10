@@ -1,31 +1,42 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'nestjs-firebase-admin';
 import { randomUUID } from 'node:crypto';
+import { NotificationService } from './notification/notification.service';
 import { UpdateDataDto } from './dtos/UpdateDataDto';
 import { SetDataDto } from './dtos/SetDataDto';
 
 @Injectable()
 export class AppService {
-  constructor(private readonly databaseService: DatabaseService) {}
+  constructor(
+    private readonly databaseService: DatabaseService,
+    private readonly notificationService: NotificationService,
+  ) {}
 
   async getData(): Promise<any> {
-    const data = await this.databaseService.get('path/to/data');
-    if (!data) {
-      throw new Error('Data not found');
-    }
-    return data;
+    return 'This action returns all data';
   }
 
-  async setData(data: SetDataDto): Promise<SetDataDto & { id: string }> {
+  async setData(setDataDto: SetDataDto): Promise<SetDataDto & { id: string }> {
     const id = randomUUID();
-    await this.databaseService.set(`path/to/data/${id}`, data);
+    await this.databaseService.set(`path/to/data/${id}`, setDataDto);
 
-    return { ...data, id };
+    // Publish notification when data is created
+    await this.notificationService.publishNotification('data-created', {
+      type: 'DATA_CREATED',
+      data: setDataDto,
+      id,
+      timestamp: new Date().toISOString(),
+    });
+
+    return { ...setDataDto, id };
   }
 
-  async updateData(id: string, data: UpdateDataDto): Promise<UpdateDataDto> {
-    await this.databaseService.update(`path/to/data/${id}`, data);
-    return data;
+  async updateData(
+    id: string,
+    updateDataDto: UpdateDataDto,
+  ): Promise<UpdateDataDto> {
+    await this.databaseService.update(`path/to/data/${id}`, updateDataDto);
+    return updateDataDto;
   }
 
   async deleteData(id: string): Promise<void> {

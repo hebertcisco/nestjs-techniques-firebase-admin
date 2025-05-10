@@ -15,13 +15,13 @@ import { ApiTags, ApiOperation, ApiResponse, ApiParam } from '@nestjs/swagger';
 @ApiTags('Data Management')
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) { }
+  constructor(private readonly appService: AppService) {}
 
   @ApiOperation({ summary: 'Get all data' })
   @ApiResponse({
     status: 200,
     description: 'Returns all data successfully',
-    type: [SetDataDto]
+    type: [SetDataDto],
   })
   @Get()
   async getData(): Promise<any> {
@@ -32,11 +32,11 @@ export class AppController {
   @ApiResponse({
     status: 201,
     description: 'Data created successfully',
-    type: SetDataDto
+    type: SetDataDto,
   })
   @ApiResponse({
     status: 400,
-    description: 'Invalid input data'
+    description: 'Invalid input data',
   })
   @Post()
   async setData(@Body() setDataDto: SetDataDto): Promise<SetDataDto> {
@@ -47,16 +47,16 @@ export class AppController {
   @ApiParam({
     name: 'id',
     description: 'The ID of the data to update',
-    type: String
+    type: String,
   })
   @ApiResponse({
     status: 200,
     description: 'Data updated successfully',
-    type: UpdateDataDto
+    type: UpdateDataDto,
   })
   @ApiResponse({
     status: 404,
-    description: 'Data not found'
+    description: 'Data not found',
   })
   @Put('update/:id')
   async updateData(
@@ -70,15 +70,15 @@ export class AppController {
   @ApiParam({
     name: 'id',
     description: 'The ID of the data to delete',
-    type: String
+    type: String,
   })
   @ApiResponse({
     status: 200,
-    description: 'Data deleted successfully'
+    description: 'Data deleted successfully',
   })
   @ApiResponse({
     status: 404,
-    description: 'Data not found'
+    description: 'Data not found',
   })
   @Delete('delete/:id')
   async deleteData(@Param('id') id: string): Promise<void> {

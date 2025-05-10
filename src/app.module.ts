@@ -2,11 +2,10 @@ import { DynamicModule, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AdminModule } from 'nestjs-firebase-admin';
-import { ConfigModule } from '@nestjs/config';
+import { NotificationModule } from './notification/notification.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
     AdminModule.registerAsync({
       useFactory: async () => ({
         credential: {
@@ -18,6 +17,7 @@ import { ConfigModule } from '@nestjs/config';
         storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
       }),
     }) as DynamicModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
