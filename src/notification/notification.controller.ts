@@ -8,8 +8,6 @@ export class NotificationController {
 
   @EventPattern('data-created')
   async handleDataCreated(data: any) {
-    console.log('Received notification for new data:', data);
-    // Here you can add your notification logic
-    // For example, sending emails, push notifications, etc.
+    this.notificationService.sendNotification(data);
   }
 }
