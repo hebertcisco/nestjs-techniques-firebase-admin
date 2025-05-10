@@ -4,12 +4,9 @@
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-
 ## Description
 
-This project demonstrates the integration of NestJS with Firebase Admin SDK, showcasing various techniques for building robust backend applications. It includes features like data management, authentication, and real-time database operations.
+This project demonstrates the integration of NestJS with Firebase Admin SDK, MQTT, and async notification techniques. It includes features like data management, real-time notifications, and cloud deployment.
 
 ## Features
 
@@ -18,13 +15,18 @@ This project demonstrates the integration of NestJS with Firebase Admin SDK, sho
 - ✅ Input Validation using class-validator
 - 📚 TypeScript Support
 - 🔄 Real-time Database Operations
+- 📢 MQTT-based Notification System
+- 📲 FCM Push Notifications
 - 🛡️ Security Best Practices
+- 🐳 Docker & Docker Compose support
+- 🚀 Fly.io deployment ready
 
 ## Prerequisites
 
 - Node.js (v16 or higher)
 - npm or yarn
 - Firebase Project with Admin SDK credentials
+- MQTT Broker (e.g., Mosquitto)
 
 ## Installation
 
@@ -46,9 +48,14 @@ $ npm install
 FIREBASE_PROJECT_ID=your-project-id
 FIREBASE_PRIVATE_KEY=your-private-key
 FIREBASE_CLIENT_EMAIL=your-client-email
+FIREBASE_DATABASE_URL=your-firebase-db-url
+FIREBASE_STORAGE_BUCKET=your-firebase-bucket
+MQTT_URL=mqtt://localhost:1883
 ```
 
 ## Running the Application
+
+### Locally
 
 ```bash
 # Development
@@ -60,6 +67,44 @@ $ npm run start:dev
 # Production mode
 $ npm run start:prod
 ```
+
+### With Docker
+
+Build and run the application using Docker:
+
+```bash
+# Build the Docker image
+$ docker build -t nestjs-firebase-admin .
+
+# Run the container
+$ docker run --env-file .env -p 3000:3000 nestjs-firebase-admin
+```
+
+### With Docker Compose
+
+You can use `docker-compose.yml` to run the app and expose the MQTT port:
+
+```bash
+docker-compose up --build
+```
+
+- The app will be available on port 5672 (as mapped in docker-compose).
+- Make sure your MQTT broker is accessible at the URL specified in `MQTT_URL`.
+
+## Deploying to Fly.io
+
+This project is ready for deployment on [Fly.io](https://fly.io/):
+
+1. Install the Fly CLI: <https://fly.io/docs/hands-on/install-flyctl/>
+2. Authenticate: `fly auth login`
+3. Launch your app:
+
+   ```bash
+   fly launch
+   fly deploy
+   ```
+
+4. The `fly.toml` is preconfigured for the app and exposes port 5672.
 
 ## API Documentation
 
