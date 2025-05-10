@@ -1,12 +1,25 @@
 import { DynamicModule, Module } from '@nestjs/common';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import { configService } from 'nest-shared';
+import { AdminModule, DatabaseService } from 'nestjs-firebase-admin';
+
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { AdminModule } from 'nestjs-firebase-admin';
-import { ConfigModule } from '@nestjs/config';
+import { NotificationController } from './notification/notification.controller';
+import { NotificationService } from './notification/notification.service';
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ClientsModule.register([
+      {
+        name: 'MQTT_SERVICE',
+        transport: Transport.MQTT,
+        options: {
+          url: configService.getValue<string>('MQTT_URL'),
+          clientId: 'nestjs-notification-client',
+        },
+      },
+    ]),
     AdminModule.registerAsync({
       useFactory: async () => ({
         credential: {
@@ -19,7 +32,8 @@ import { ConfigModule } from '@nestjs/config';
       }),
     }) as DynamicModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, NotificationController],
+  providers: [AppService, NotificationService],
+  exports: [AppService, NotificationService],
 })
 export class AppModule {}
