@@ -10,9 +10,9 @@ export class AppService {
   constructor(
     private readonly databaseService: DatabaseService,
     private readonly notificationService: NotificationService,
-  ) {}
+  ) { }
 
-  async getData(): Promise<any[]> {
+  async getData(device_id?: string): Promise<any[]> {
     const data = await this.databaseService.get('path/to/data');
     if (!data) {
       return [];
@@ -21,7 +21,16 @@ export class AppService {
       id: key,
       ...(typeof value === 'object' && value !== null ? value : {}),
     }));
-    return dataArray;
+
+    let filtered = dataArray;
+    if (device_id) {
+      filtered = filtered.filter(item => item.device_id === device_id);
+    }
+
+    return filtered.map((item) => {
+      const { device_id, fcm_token, ...rest } = item;
+      return rest;
+    });
   }
 
   async setData(setDataDto: SetDataDto): Promise<SetDataDto & { id: string }> {
@@ -45,8 +54,8 @@ export class AppService {
       id,
       timestamp: timestamp,
     });
-
-    return { ...setDataDto, id };
+    const { device_id, fcm_token, ...rest } = setDataDto;
+    return { ...rest, id } as SetDataDto & { id: string };
   }
 
   async updateData(
@@ -57,7 +66,9 @@ export class AppService {
       ...updateDataDto,
       updatedAt: new Date().toISOString(),
     });
-    return updateDataDto;
+
+    const { device_id, fcm_token, ...rest } = updateDataDto;
+    return rest;
   }
 
   async deleteData(id: string): Promise<void> {

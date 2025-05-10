@@ -37,4 +37,21 @@ export class SetDataDto {
     message: 'FCM token can only contain letters, numbers and underscores',
   })
   fcm_token: string;
+
+
+  @ApiProperty({
+    description: 'The device ID',
+    example: 'device_id_example',
+    minLength: 10,
+    maxLength: 200,
+  })
+  @IsNotEmpty({ message: 'Device ID is required' })
+  @IsString({ message: 'Device ID must be a string' })
+  @MinLength(10, { message: 'Device ID must be at least 10 characters long' })
+  @MaxLength(200, { message: 'Device ID must not exceed 200 characters' })
+  @Matches(/^[a-zA-Z0-9_]+$/, {
+    message: 'Device ID can only contain letters, numbers and underscores',
+  })
+  device_id: string;
 }
+
