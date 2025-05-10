@@ -22,4 +22,4 @@ COPY --from=builder  /api/dist/ ./dist/
 
 EXPOSE 5672
 
-CMD ["node", "dist/src/main.js"]
+CMD ["node", "dist/main.js"]
