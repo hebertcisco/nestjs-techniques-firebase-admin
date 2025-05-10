@@ -1,0 +1,22 @@
+version: "3"
+
+services:
+  nestjs-techniques-firebase-admin:
+    ports:
+      - "5672:5672"
+    build: .
+    environment:
+      MQTT_URL: ${MQTT_URL}
+      
+      FIREBASE_PROJECT_ID: ${FIREBASE_PROJECT_ID}
+      FIREBASE_CLIENT_EMAIL: ${FIREBASE_CLIENT_EMAIL}
+      FIREBASE_PRIVATE_KEY: ${FIREBASE_PRIVATE_KEY}
+      FIREBASE_DATABASE_URL: ${FIREBASE_DATABASE_URL}
+      FIREBASE_STORAGE_BUCKET: ${FIREBASE_STORAGE_BUCKET}
+      
+    networks:
+      - nestjs-techniques-firebase-admin-network
+
+networks:
+  nestjs-techniques-firebase-admin-network:
+    driver: bridge
