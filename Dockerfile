@@ -1,20 +1,23 @@
-FROM node:22
+FROM node:20-alpine as builder
+ENV NODE_ENV build
 
-WORKDIR /app
-
+WORKDIR /api
 COPY package*.json ./
 
 RUN npm install
-
 COPY . .
 
-RUN npx tsc
+RUN npm run build \
+    && npm prune --production
 
-RUN npm install -g pm2
-RUN npm install -g @nestjs/cli
+FROM node:20-alpine
 
-RUN npm run build
+ENV NODE_ENV production
 
-EXPOSE 5672
+WORKDIR /api
 
-CMD ["pm2-runtime", "ecosystem.config.js"]
+COPY --from=builder  /api/package*.json ./
+COPY --from=builder  /api/node_modules/ ./node_modules/
+COPY --from=builder  /api/dist/ ./dist/
+
+CMD ["node", "dist/src/main.js"]
