@@ -20,4 +20,6 @@ COPY --from=builder  /api/package*.json ./
 COPY --from=builder  /api/node_modules/ ./node_modules/
 COPY --from=builder  /api/dist/ ./dist/
 
-CMD ["node", "dist/main.js"]
+EXPOSE 5672
+
+CMD ["node", "dist/src/main.js"]

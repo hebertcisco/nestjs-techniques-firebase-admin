@@ -28,11 +28,11 @@ async function bootstrap() {
 
   await Promise.all([
     microservice.listen(),
-    app.listen(process.env.HTTP_PORT || 3000),
+    app.listen(process.env.PORT || 3000),
   ]);
   console.log(`🚀 Microservices is running`);
   console.log(
-    `🚀 HTTP API is listening on port ${process.env.HTTP_PORT || 3000}`,
+    `🚀 HTTP API is listening on port ${process.env.PORT || 3000}`,
   );
 }
 bootstrap();
