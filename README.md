@@ -1,144 +1,120 @@
-# NestJS Firebase Admin Integration
+# NestJS Techniques: Firebase Admin
 
 <p align="center">
   <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
 </p>
 
-## Description
+Example project demonstrating how to integrate [nestjs-firebase-admin](https://www.npmjs.com/package/nestjs-firebase-admin) with NestJS, including Realtime Database CRUD, FCM push notifications, and MQTT-based event-driven messaging.
 
-This project demonstrates the integration of NestJS with Firebase Admin SDK, MQTT, and async notification techniques. It includes features like data management, real-time notifications, and cloud deployment.
+## Stack
 
-## Features
+| Layer | Technology |
+|---|---|
+| Framework | NestJS 11 |
+| Firebase | `nestjs-firebase-admin` (Admin SDK wrapper) |
+| Messaging | MQTT via `@nestjs/microservices` |
+| Push Notifications | Firebase Cloud Messaging (FCM) |
+| Docs | Swagger (`@nestjs/swagger`) |
+| Validation | `class-validator` + `class-transformer` |
+| Deploy | Docker, Docker Compose, Fly.io |
 
-- 🔐 Firebase Admin SDK Integration
-- 📝 RESTful API with Swagger Documentation
-- ✅ Input Validation using class-validator
-- 📚 TypeScript Support
-- 🔄 Real-time Database Operations
-- 📢 MQTT-based Notification System
-- 📲 FCM Push Notifications
-- 🛡️ Security Best Practices
-- 🐳 Docker & Docker Compose support
-- 🚀 Fly.io deployment ready
+## Project Structure
+
+```
+src/
+  app.module.ts             # Root module (Firebase Admin + MQTT setup)
+  app.controller.ts         # REST endpoints (CRUD)
+  app.service.ts            # Business logic (DatabaseService usage)
+  main.ts                   # Bootstrap (HTTP + MQTT microservice + Swagger)
+  dtos/
+    SetDataDto.ts           # Create DTO with validation
+    UpdateDataDto.ts        # Partial update DTO
+  notification/
+    notification.controller.ts  # MQTT event listener (@EventPattern)
+    notification.service.ts     # FCM + MQTT publish logic
+```
 
 ## Prerequisites
 
-- Node.js (v16 or higher)
-- npm or yarn
-- Firebase Project with Admin SDK credentials
-- MQTT Broker (e.g., Mosquitto)
+- Node.js >= 20
+- Firebase project with Admin SDK credentials
+- MQTT broker (e.g., Mosquitto)
 
-## Installation
+## Setup
 
 ```bash
-# Clone the repository
-$ git clone [your-repository-url]
-
-# Install dependencies
-$ npm install
+npm install
+cp .env.example .env
 ```
 
-## Configuration
-
-1. Create a Firebase project in the [Firebase Console](https://console.firebase.google.com/)
-2. Generate a new private key for your service account
-3. Create a `.env` file in the root directory with the following variables:
+Fill in `.env`:
 
 ```env
 FIREBASE_PROJECT_ID=your-project-id
-FIREBASE_PRIVATE_KEY=your-private-key
 FIREBASE_CLIENT_EMAIL=your-client-email
-FIREBASE_DATABASE_URL=your-firebase-db-url
-FIREBASE_STORAGE_BUCKET=your-firebase-bucket
+FIREBASE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+FIREBASE_DATABASE_URL=https://your-project.firebaseio.com
+FIREBASE_STORAGE_BUCKET=your-project.appspot.com
 MQTT_URL=mqtt://localhost:1883
+PORT=5672
 ```
 
-## Running the Application
-
-### Locally
+## Running
 
 ```bash
-# Development
-$ npm run start
+# Development (watch mode)
+npm run start:dev
 
-# Watch mode
-$ npm run start:dev
-
-# Production mode
-$ npm run start:prod
+# Production
+npm run build && npm run start:prod
 ```
 
-### With Docker
+The app starts both an HTTP server and an MQTT microservice. Swagger docs are available at `/docs`.
 
-Build and run the application using Docker:
+## API Endpoints
+
+| Method | Path | Description |
+|---|---|---|
+| `GET` | `/` | List all data |
+| `POST` | `/` | Create data (triggers MQTT event + delayed FCM notification) |
+| `PUT` | `/update/:id` | Update data by ID |
+| `DELETE` | `/delete/:id` | Delete data by ID |
+
+## How It Works
+
+1. **Create** (`POST /`) - Saves data to Firebase Realtime Database, then publishes a `data-created` event via MQTT
+2. **MQTT Listener** - `NotificationController` subscribes to `data-created` events using `@EventPattern`
+3. **FCM Push** - `NotificationService` sends a welcome push notification via FCM after a 10s delay
+4. **CRUD** - All database operations use `DatabaseService` from `nestjs-firebase-admin`
+
+## Docker
 
 ```bash
-# Build the Docker image
-$ docker build -t nestjs-firebase-admin .
+# Build and run
+docker build -t nestjs-techniques-firebase-admin .
+docker run --env-file .env -p 5672:5672 nestjs-techniques-firebase-admin
 
-# Run the container
-$ docker run --env-file .env -p 3000:3000 nestjs-firebase-admin
-```
-
-### With Docker Compose
-
-You can use `docker-compose.yml` to run the app and expose the MQTT port:
-
-```bash
+# Or with Docker Compose
 docker-compose up --build
 ```
 
-- The app will be available on port 5672 (as mapped in docker-compose).
-- Make sure your MQTT broker is accessible at the URL specified in `MQTT_URL`.
+## Deploy to Fly.io
 
-## Deploying to Fly.io
-
-This project is ready for deployment on [Fly.io](https://fly.io/):
-
-1. Install the Fly CLI: <https://fly.io/docs/hands-on/install-flyctl/>
-2. Authenticate: `fly auth login`
-3. Launch your app:
-
-   ```bash
-   fly launch
-   fly deploy
-   ```
-
-4. The `fly.toml` is preconfigured for the app and exposes port 5672.
-
-## API Documentation
-
-Once the application is running, you can access the Swagger documentation at:
-
+```bash
+fly launch
+fly deploy
 ```
-http://localhost:3000/docs
-```
+
+The `fly.toml` is pre-configured for the `gru` region on port 5672.
 
 ## Testing
 
 ```bash
-# Unit tests
-$ npm run test
-
-# e2e tests
-$ npm run test:e2e
-
-# Test coverage
-$ npm run test:cov
+npm run test          # Unit tests
+npm run test:e2e      # E2E tests
+npm run test:cov      # Coverage
 ```
-
-## Contributing
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Support
-
-For support, please open an issue in the GitHub repository or contact the maintainers.
+[UNLICENSED](LICENSE)
